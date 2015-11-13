@@ -1,6 +1,10 @@
 #ifndef LOWGM_GAME_VEN_DESC_H_
 #define LOWGM_GAME_VEN_DESC_H_
 
+#ifndef LOWGM_IMPLEMENTATION_
+#   error "Invalid use of this file."
+#endif  // LOWGM_IMPLEMENTATION_
+
 #include "Common.h"
 
 struct LGMGameVenDesc_ {
@@ -11,14 +15,18 @@ struct LGMGameVenDesc_ {
     LGMGameVenDesc *x_prev, *x_next;
 };
 
+// Basics
+bool VDStartup();
+void VDCleanup();
+
 // Initializes an LGMGameVenDesc to nil.
 void VDInitNil(LGMTHIS_ LGMGameVenDesc *pvd);
 
 // Creates an LGMGameVenDesc with descrption.
-LGMGameVenDesc *VDCreate(const char *desc);
+LGMGameVenDesc *VDCreate(LGMIN_ const char *desc);
 
 // Destroy an LGMGameVenDesc.
-void *VDDestroy(LGMIN_ LGMGameVenDesc *pvd);
+void VDDestroy(LGMIN_ LGMGameVenDesc *pvd);
 
 // Links two LGMGameVenDescs s.
 void VDLink(LGMIN_ LGMGameVenDesc *lhs, LGMIN_ LGMGameVenDesc *rhs);

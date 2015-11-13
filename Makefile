@@ -1,22 +1,18 @@
-SRC = $(wildcard ./src/*.c)
-OBJ = $(patsubst ./src/%.c,./obj/%.o,$(SRC))
+SRC = $(wildcard src/*.c)
+OBJ = $(patsubst src/%.c,obj/%.o,$(SRC))
 
-.PHONY: all staticlib dynamiclib clean
+.PHONY: all lib clean
 
-all: staticlib dynamiclib
+all: lib
 
 $(OBJ): $(SRC)
 	@mkdir -p ./obj
-	gcc -std=c11 -Wall -Wconversion -Werror -Wextra -Wformat -c -o $@ $<
+	gcc -std=c11 -Wall -Wconversion -Werror -Wextra -Wformat -c -o $@ $(patsubst obj/%.o,src/%.c,$@)
 
-staticlib: $(OBJ)
+lib: $(OBJ)
 	@mkdir -p ./lib
-	ar crS ./lib/liblowgm.a $?
-	ranlib ./lib/liblowgm.a
-
-dynamiclib: $(OBJ)
-	@mkdir -p ./lib
-	gcc -shared -Wl,-soname,liblowgm.so -o ./lib/liblowgm.so
+	ar -rcs ./lib/liblowgm.a $?
 
 clean:
 	rm -fr ./obj ./lib
+

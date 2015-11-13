@@ -138,7 +138,7 @@ LGMGameInfo *GICreate(LGMIN_ const char *name) {
     pgi->x_time = 0U;
     pgi->x_nach = 0U;
     pgi->x_mach = 0U;
-    GAInitNil(&pgi->x_achs);
+    GAInitNil(&pgi->x_achs, pgi);
     VDInitNil(&pgi->x_vens);
     pgi->x_nil = false;
     return pgi;

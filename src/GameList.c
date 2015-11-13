@@ -26,6 +26,7 @@ LGMGameInfo *LGMGLAdd(LGMTHIS_ LGMGameList *pgl, const char *name) {
         return nullptr;
     GILink(pgl->x_gis.x_prev, pgi);
     GILink(pgi, &pgl->x_gis);
+    return pgi;
 }
 
 bool LGMGLRemove(LGMIN_ LGMGameInfo *pgi) {
@@ -62,20 +63,29 @@ const LGMGameInfo *LGMGLFindC(LGMTHIS_ const LGMGameList *pgl,
 }
 
 void LGMGLSort(LGMTHIS_ LGMGameList *pgl, LGMIN_ LGMCmp cmp) {
-    LGMGameInfo *pgi = GSSort(pgl->x_gis.x_next, &pgl->x_gis, gs_cmps[cmp]);
-    GILink(&pgl->x_gis, pgi);
+    pgl->x_gis.x_next = GSSort(pgl->x_gis.x_next, &pgl->x_gis, gs_cmps[cmp]);
+    LGMGameInfo *pgi = &pgl->x_gis;
+    while (pgi->x_next) {
+        pgi->x_next->x_prev = pgi;
+        pgi = pgi->x_next;
+    }
+    GILink(pgi, &pgl->x_gis);
 }
 
 LGMIteratorC *LGMGLSortC(LGMTHIS_ LGMGameList *pgl, LGMIN_ LGMCmp cmp) {
     LGMIteratorC *pic = ICCreate(&pgl->x_gis, cmp);
     if (!pic)
         return nullptr;
-    pic->x_pgi = &pgl->x_gis;
     if (pgl->x_rdy & (1U << cmp))
         return pic;
-    LGMGameInfo *pgi = GSSortC(pgl->x_gis.x_next, &pgl->x_gis, gs_cmps[cmp],
-        cmp);
-    GILinkC(&pgl->x_gis, pgi, cmp);
+    pgl->x_gis.x_nxti[cmp] = GSSortC(pgl->x_gis.x_next, &pgl->x_gis,
+        gs_cmps[cmp], cmp);
+    LGMGameInfo *pgi = &pgl->x_gis;
+    while (pgi->x_nxti[cmp]) {
+        pgi->x_nxti[cmp]->x_prvi[cmp] = pgi;
+        pgi = pgi->x_nxti[cmp];
+    }
+    GILinkC(pgi, &pgl->x_gis, cmp);
     return pic;
 }
 

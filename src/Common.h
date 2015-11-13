@@ -11,4 +11,6 @@
 
 #define nullptr NULL
 
+#define UNUSED(x_) ((void) sizeof((ptrdiff_t) (x_)))
+
 #endif  // LOWGM_COMMON_H_

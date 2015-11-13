@@ -12,6 +12,8 @@ struct LGMIteratorC_ {
     const LGMGameInfo *x_pgi;
     // The comparator.
     LGMCmp x_cmp;
+    // For LGMICReset use.
+    const LGMGameInfo *x_nil;
     // For internal use.
     LGMIteratorC *x_next;
 };

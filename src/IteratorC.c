@@ -10,8 +10,13 @@ void LGMICDestroy(LGMIN_ LGMIteratorC *pic) {
     ICDestroy(pic);
 }
 
-const LGMGameInfo *LGMGICGet(LGMTHIS_ const LGMIteratorC *pic) {
+const LGMGameInfo *LGMICGet(LGMTHIS_ const LGMIteratorC *pic) {
     return pic->x_pgi;
+}
+
+LGMIteratorC *LGMICReset(LGMTHIS_ LGMIteratorC *pic) {
+    pic->x_pgi = pic->x_nil;
+    return pic;
 }
 
 bool LGMICNil(LGMTHIS_ const LGMIteratorC *pic) {
@@ -40,6 +45,7 @@ LGMIteratorC *ICCreate(LGMIN_ const LGMGameInfo *pgi, LGMIN_ LGMCmp cmp) {
         return nullptr;
     pic->x_pgi = pgi;
     pic->x_cmp = cmp;
+    pic->x_nil = pgi;
     return pic;
 }
 

@@ -28,7 +28,16 @@ int Main() {
     printf("name, cdesc, cprev:\n");
     for (LGMPREV(c); !LGMNIL(c); LGMPREV(c))
         printf("Name: %s, Desc: %s\n", LGMGIGetName(LGMICGet(c)), LGMGIGetDesc(LGMICGet(c)));
-    LGMICDestroy(c);
+
+    LGMNEXT(c);
+    printf("name, cdesc, cfirst:\n");
+    printf("Name: %s, Desc: %s\n", LGMGIGetName(LGMICGet(c)), LGMGIGetDesc(LGMICGet(c)));
+
+    LGMICReset(c);
+
+    LGMPREV(c);
+    printf("name, cdesc, clast:\n");
+    printf("Name: %s, Desc: %s\n", LGMGIGetName(LGMICGet(c)), LGMGIGetDesc(LGMICGet(c)));
     
     printf("name, cdesc, next:\n");
     for (const LGMGameInfo *i = LGMNEXT(LGMGLNilC(pgl)); !LGMNIL(i); i = LGMNEXT(i))
@@ -37,6 +46,7 @@ int Main() {
     for (const LGMGameInfo *i = LGMPREV(LGMGLNilC(pgl)); !LGMNIL(i); i = LGMPREV(i))
         printf("Name: %s, Desc: %s\n", LGMGIGetName(i), LGMGIGetDesc(i));
 
+    LGMICDestroy(c);
     LGMGLDestroy(pgl);
     return 0;
 }

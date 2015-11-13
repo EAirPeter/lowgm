@@ -8,22 +8,24 @@
 LGMGameInfo *GSSort(LGMIN_ LGMGameInfo *beg, LGMIN_ LGMGameInfo *end,
     LGMIN_ GSComparator *cmp)
 {
-    if (beg->x_next == end)
+    if (beg->x_next == end) {
+        beg->x_next = nullptr;
         return beg;
+    }
     LGMGameInfo *mid = beg;
     for (LGMGameInfo *i = end; mid != i && mid->x_next != i;
         mid = mid->x_next, i = i->x_prev);
-    mid = GSSort(mid, end, cmp);
     beg = GSSort(beg, mid, cmp);
+    mid = GSSort(mid, end, cmp);
     LGMGameInfo tmp;
-    GIInitNil(&tmp);
-    LGMGameInfo *pgi;
-    for (LGMGameInfo *i = beg, *j = mid; i != mid || j != end; ) {
-        if (i == mid) {
+    LGMGameInfo *pgi = &tmp;
+    for (LGMGameInfo *i = beg, *j = mid; i || j; ) {
+        tmp.x_prev = pgi;
+        if (!i) {
             pgi = j;
             j = j->x_next;
         }
-        else if (j == end) {
+        else if (!j) {
             pgi = i;
             i = i->x_next;
         }
@@ -35,14 +37,49 @@ LGMGameInfo *GSSort(LGMIN_ LGMGameInfo *beg, LGMIN_ LGMGameInfo *end,
             pgi = i;
             i = i->x_next;
         }
-        GILink(tmp.x_prev, pgi);
-        GILink(pgi, &tmp);
+        tmp.x_prev->x_next = pgi;
     }
+    pgi->x_next = nullptr;
     return tmp.x_next;
 }
 
 LGMGameInfo *GSSortC(LGMIN_ LGMGameInfo *beg, LGMIN_ LGMGameInfo *end,
-    LGMIN_ GSComparator *cmp, LGMIN_ LGMCmp idx);
+    LGMIN_ GSComparator *cmp, LGMIN_ LGMCmp idx)
+{
+    if (beg->x_next == end) {
+        beg->x_nxti[idx] = nullptr;
+        return beg;
+    }
+    LGMGameInfo *mid = beg;
+    for (LGMGameInfo *i = end; mid != i && mid->x_next != i;
+        mid = mid->x_next, i = i->x_prev);
+    beg = GSSortC(beg, mid, cmp, idx);
+    mid = GSSortC(mid, end, cmp, idx);
+    LGMGameInfo tmp;
+    LGMGameInfo *pgi = &tmp;
+    for (LGMGameInfo *i = beg, *j = mid; i || j; ) {
+        tmp.x_prev = pgi;
+        if (!i) {
+            pgi = j;
+            j = j->x_nxti[idx];
+        }
+        else if (!j) {
+            pgi = i;
+            i = i->x_nxti[idx];
+        }
+        else if (cmp(j, i)) {
+            pgi = j;
+            j = j->x_nxti[idx];
+        }
+        else {
+            pgi = i;
+            i = i->x_nxti[idx];
+        }
+        tmp.x_prev->x_nxti[idx] = pgi;
+    }
+    pgi->x_nxti[idx] = nullptr;
+    return tmp.x_nxti[idx];
+}
 
 
 // Internals

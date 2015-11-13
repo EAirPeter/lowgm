@@ -148,7 +148,7 @@ const LGMGameInfo *LGMGINextC(LGMTHIS_ const LGMGameInfo *pgi);
 void LGMICDestroy(LGMIN_ LGMIteratorC *pic);
 
 // Get the LGMGameInfo that pic binds to.
-const LGMGameInfo *LGMGICGet(LGMTHIS_ const LGMIteratorC *pic);
+const LGMGameInfo *LGMICGet(LGMTHIS_ const LGMIteratorC *pic);
 
 // Returns whether the pointer is nil.
 bool LGMICNil(LGMTHIS_ const LGMIteratorC *pic);

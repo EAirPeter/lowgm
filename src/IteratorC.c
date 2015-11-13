@@ -10,7 +10,7 @@ void LGMICDestroy(LGMIN_ LGMIteratorC *pic) {
     ICDestroy(pic);
 }
 
-const LGMGameInfo *LGMGICGet(LGMTHIS_ const LGMIteratorC *pic) {
+const LGMGameInfo *LGMICGet(LGMTHIS_ const LGMIteratorC *pic) {
     return pic->x_pgi;
 }
 

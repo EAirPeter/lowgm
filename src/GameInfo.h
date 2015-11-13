@@ -29,8 +29,8 @@ struct LGMGameInfo_ {
     bool x_nil;
     LGMGameInfo *x_prev, *x_next;
     // For LGMIteratorC use.
-    const LGMGameInfo *x_prvi[LGM_ALLCMP_];
-    const LGMGameInfo *x_nxti[LGM_ALLCMP_];
+    LGMGameInfo *x_prvi[LGM_ALLCMP_];
+    LGMGameInfo *x_nxti[LGM_ALLCMP_];
 };
 
 // Basics

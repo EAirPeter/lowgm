@@ -1,0 +1,7 @@
+If the return type of a lowgm function is bool, it returns true if success or
+ false if failed.
+
+It is assumed that:
+    The name of each LGMGameInfo shall be unique.
+    The name of each LGMGameAchievement in a LGMGameInfo shall be unique.
+

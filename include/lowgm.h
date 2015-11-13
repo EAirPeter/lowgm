@@ -5,8 +5,15 @@
 #include <stdbool.h>
 
 // Basics.
+
+// Initializes lowgm.
 bool LGMStartup();
+
+// Cleans up.
 void LGMCleanup();
+
+// Determines whether lowgm is initialized.
+bool LGMIsReady();
 
 // Used to tell user what an argument is used for.
 #define LGMIN_
@@ -31,13 +38,24 @@ typedef struct LGMGameAchievement_  LGMGameAchievement;
 // Represents a description of vendor in an LGMGameInfo.
 typedef struct LGMGameVenDesc_      LGMGameVenDesc;
 
-// An operator < for LGMGameInfo.
-typedef bool (LGMComparator)(LGMIN_ LGMGameInfo *lhs, LGMIN_ LGMGameInfo *rhs);
+// Represents the comparator used to sort an LGMGameList.
+typedef enum LGMCmp_ {
+    // By name.
+    LGMCMP_NAME = 0U,
+    // By description.
+    LGMCMP_DESC,
+    // By time (in hour) the game has been played for.
+    LGMCMP_TIME,
+    // By the ahieving rate of achievements.
+    LGMCMP_ACHS,
+    // The number of comparators.
+    LGM_ALLCMP_,
+} LGMCmp;
+
+#define LGMGAMELIST_OPERATIONS
 
 // Create an LGMGameList.
 LGMGameList *LGMGLCreate();
-
-#define LGMGAMELIST_OPERATIONS
 
 // Destroy.
 void LGMGLDestroy(LGMTHIS_ LGMGameList *pgl);
@@ -51,7 +69,7 @@ bool LGMGLRemove(LGMIN_ LGMGameInfo *pgi);
 
 // Returns a pointer pointing to the LGMGameIndo whose next is the first
 //  one and previous is the last one.
-LGMGameInfo *LGMGLNil(LGMTHIS_ LGMGameList *pgi);
+LGMGameInfo *LGMGLNil(LGMTHIS_ LGMGameList *pgl);
 const LGMGameInfo *LGMGLNilC(LGMTHIS_ const LGMGameList *pgl);
 
 // Returns a pointer pointing the LGMGameInfo with the given name.
@@ -61,12 +79,11 @@ const LGMGameInfo *LGMGLFindC(LGMTHIS_ const LGMGameList *pgl,
     const char *name);
 
 // Sorts the LGMGameList according to the given comparator.
-void LGMGLSort(LGMTHIS_ LGMGameList *pgl, LGMIN_ LGMComparator *cmp);
+void LGMGLSort(LGMTHIS_ LGMGameList *pgl, LGMIN_ LGMCmp cmp);
 
-// Sorts the LGMGameList without changing itself according to the given
-//  comparator, but creates an LGMIteratorC binding to nil instead.
-LGMIteratorC *LGMGLSortC(LGMTHIS_ const LGMGameList *pgl,
-    LGMIN_ LGMComparator *cmp);
+// Sorts the LGMGameList according to the given comparator without changing the
+//  order of LGMGameInfo s, but creates an LGMIteratorC binding to nil instead.
+LGMIteratorC *LGMGLSortC(LGMTHIS_ LGMGameList *pgl, LGMIN_ LGMCmp cmp);
 
 #undef  LGMGAMELIST_OPERATIONS
 #define LGMGMAEINFO_OPERATIONS
@@ -127,14 +144,14 @@ const LGMGameInfo *LGMGINextC(LGMTHIS_ const LGMGameInfo *pgi);
 #undef  LGMGAMEINFO_OPERATIONS
 #define LGMITERATORC_OPERATIONS
 
-// Destroy.
-void LGMICDestroy(LGMTHIS_ LGMIteratorC *pic);
+// Destroys.
+void LGMICDestroy(LGMIN_ LGMIteratorC *pic);
 
 // Get the LGMGameInfo that pic binds to.
 const LGMGameInfo *LGMGICGet(LGMTHIS_ const LGMIteratorC *pic);
 
 // Returns whether the pointer is nil.
-bool LGMICNil(LGMTHIS_ const LGMIteratorC *pgi);
+bool LGMICNil(LGMTHIS_ const LGMIteratorC *pic);
 
 // Binds pic to the previous LGMGameInfo and return it.
 LGMIteratorC *LGMICPrev(LGMTHIS_ LGMIteratorC *pic);
@@ -185,21 +202,6 @@ LGMGameVenDesc *LGMVDNext(LGMTHIS_ LGMGameVenDesc *pvd);
 const LGMGameVenDesc *LGMVDNextC(LGMTHIS_ const LGMGameVenDesc *pvd);
 
 #undef  LGMGAMEVENDESC_OPERATIONS
-#define LGMCOMPARATORS
-
-// By name.
-bool LGMCmpName(LGMIN_ const LGMGameInfo *lhs, LGMIN_ const LGMGameInfo *rhs);
-
-// By description.
-bool LGMCmpDesc(LGMIN_ const LGMGameInfo *lhs, LGMIN_ const LGMGameInfo *rhs);
-
-// By time.
-bool LGMCmpTime(LGMIN_ const LGMGameInfo *lhs, LGMIN_ const LGMGameInfo *rhs);
-
-// By achievements.
-bool LGMCmpAchs(LGMIN_ const LGMGameInfo *lhs, LGMIN_ const LGMGameInfo *rhs);
-
-#undef  LGMCOMPARATORS
 
 // For general iterating use.
 #define LGMREMOVE(it_)  (_Generic((it_),        \
